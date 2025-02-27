@@ -3,7 +3,7 @@ module Beaker
   # all String methods while adding several platform-specific use cases.
   class Platform < String
     # Supported platforms
-    PLATFORMS = /^(alpine|amazon|(free|open)bsd|osx|centos|fedora|debian|oracle|redhat|redhatfips|scientific|opensuse|sles|ubuntu|windows|solaris|aix|archlinux|el)\-.+\-.+$/
+    PLATFORMS = /^(alpine|amazon(fips)?|(free|open)bsd|osx|centos|fedora|debian|oracle|redhat|redhatfips|scientific|opensuse|sles|ubuntu|windows|solaris|aix|archlinux|el)\-.+\-.+$/
     # Platform version numbers vs. codenames conversion hash
     PLATFORM_VERSION_CODES =
       { :debian => { "forky" => "14",
@@ -38,6 +38,7 @@ module Beaker
     # provided meets the platform formatting rules.  Platforms name must be of
     # the format /^OSFAMILY-VERSION-ARCH.*$/ where OSFAMILY is one of:
     # * amazon
+    # * amazonfips
     # * freebsd
     # * openbsd
     # * osx
