@@ -128,7 +128,7 @@ module Beaker
         @version.to_i >= 11 ? %w[curl] : %w[CSWcurl wget]
       when 'archlinux'
         %w[curl net-tools openssh]
-      when 'amazon', 'fedora'
+      when 'amazon', 'amazonfips', 'fedora'
         ['iputils']
       when 'aix', 'osx', 'windows'
         []
