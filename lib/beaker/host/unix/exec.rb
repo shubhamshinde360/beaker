@@ -302,7 +302,15 @@ module Unix::Exec
     case self['platform']
     when /amazon|debian|ubuntu|archlinux|el-|centos|fedora|redhat|oracle|scientific|opensuse|sles|solaris/
       directory = tmpdir
-      exec(Beaker::Command.new("sed -e 's/^PermitUserEnvironment .*/PermitUserEnvironment yes/' -e t -e '1s/^/PermitUserEnvironment yes\\n/' /etc/ssh/sshd_config > #{directory}/sshd_config.permit"))
+      # Use grep to check if PermitUserEnvironment is already in the config.
+      # Solaris 10 sed does not support \n in replacement strings, so we
+      # cannot use a single sed to both substitute and insert.
+      cmd = "if grep -q '^PermitUserEnvironment' /etc/ssh/sshd_config; " \
+            "then sed 's/^PermitUserEnvironment .*/PermitUserEnvironment yes/' " \
+            "/etc/ssh/sshd_config > #{directory}/sshd_config.permit; " \
+            "else cp /etc/ssh/sshd_config #{directory}/sshd_config.permit && " \
+            "echo 'PermitUserEnvironment yes' >> #{directory}/sshd_config.permit; fi"
+      exec(Beaker::Command.new(cmd))
       exec(Beaker::Command.new("mv #{directory}/sshd_config.permit /etc/ssh/sshd_config"))
       exec(Beaker::Command.new("echo '' >/etc/environment")) if self['platform'].include?('ubuntu-')
     when /(free|open)bsd/
